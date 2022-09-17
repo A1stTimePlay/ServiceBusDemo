@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SBReceiver", "SBReceiver\SB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SBShared", "SBShared\SBShared.csproj", "{B2B8C789-D4F9-40CD-9C91-92C59BB84835}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessImage", "ProcessImage\ProcessImage.csproj", "{84E46F71-D896-43DA-8775-367823C376CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessImage", "ProcessImage\ProcessImage.csproj", "{84E46F71-D896-43DA-8775-367823C376CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

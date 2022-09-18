@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using ProcessImage.Services;
+using System;
+using System.IO;
 
 namespace ProcessImage
 {

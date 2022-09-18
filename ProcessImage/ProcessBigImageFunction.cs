@@ -1,9 +1,12 @@
+using Azure.Messaging.ServiceBus;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using ProcessImage.Models;
+using ProcessImage.Services;
 using System;
 using System.IO;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Logging;
-using ProcessImage.Services;
+using System.Text;
 
 namespace ProcessImage
 {
@@ -11,27 +14,44 @@ namespace ProcessImage
     public class ProcessBigImageFunction
     {
         private readonly IImageResizer _imageResizer;
-        public ProcessBigImageFunction(IImageResizer imageResizer)
+        private readonly IImageAnalysis _imageAnalysis;
+        private readonly IMessageBusService _messageBusService;
+        public ProcessBigImageFunction(IImageResizer imageResizer, IImageAnalysis imageAnalysis, IMessageBusService messageBusService)
         {
             _imageResizer = imageResizer;
+            _imageAnalysis = imageAnalysis;
+            _messageBusService = messageBusService;
         }
         [FunctionName("ProcessBigImageFunction")]
         public void Run(
             [BlobTrigger("raw-image/{name}")] Stream inputBlob,
             [Blob("big-image/{name}", FileAccess.Write)] Stream bigImageBlob,
             string name,
-            ILogger log)
+            ILogger log,
+            [ServiceBus("processedimage", Connection = "AzureServiceBus")] out ServiceBusMessage message
+)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {inputBlob.Length} Bytes");
             try
             {
-                this._imageResizer.ResizeBig(inputBlob, bigImageBlob);
-                log.LogInformation("Reduced image saved to blob storage");
+                _imageResizer.ResizeBig(inputBlob, bigImageBlob);
             }
             catch (Exception ex)
             {
                 log.LogError("Resize fails" + ex.Message, ex);
             }
+            var metadata = _imageAnalysis.AnalyzeImage(name, inputBlob.Length);
+            message = new ServiceBusMessage(metadata.Name)
+            {
+                Subject = metadata.Name,
+                ApplicationProperties =
+                    {
+                        { "color-red", metadata.Color.Red },
+                        { "color-green", metadata.Color.Green },
+                        { "color-blue", metadata.Color.Blue },
+                        { "category", metadata.Category.ToString() },
+                    }
+            };
         }
     }
 }

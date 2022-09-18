@@ -10,6 +10,8 @@ namespace ProcessImage
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddSingleton<IImageResizer, ImageResizer>();
+            builder.Services.AddSingleton<IImageAnalysis, ImageAnalysis>();
+            builder.Services.AddSingleton<IMessageBusService, MessageBusService>();
         }
     }
 }

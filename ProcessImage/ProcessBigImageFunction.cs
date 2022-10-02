@@ -15,12 +15,10 @@ namespace ProcessImage
     {
         private readonly IImageResizer _imageResizer;
         private readonly IImageAnalysis _imageAnalysis;
-        private readonly IMessageBusService _messageBusService;
-        public ProcessBigImageFunction(IImageResizer imageResizer, IImageAnalysis imageAnalysis, IMessageBusService messageBusService)
+        public ProcessBigImageFunction(IImageResizer imageResizer, IImageAnalysis imageAnalysis)
         {
             _imageResizer = imageResizer;
             _imageAnalysis = imageAnalysis;
-            _messageBusService = messageBusService;
         }
         [FunctionName("ProcessBigImageFunction")]
         public void Run(
@@ -28,8 +26,7 @@ namespace ProcessImage
             [Blob("big-image/{name}", FileAccess.Write)] Stream bigImageBlob,
             string name,
             ILogger log,
-            [ServiceBus("processedimage", Connection = "AzureServiceBus")] out ServiceBusMessage message
-)
+            [ServiceBus("processedimage", Connection = "AzureServiceBus")] out ServiceBusMessage message)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {inputBlob.Length} Bytes");
             try
@@ -50,6 +47,7 @@ namespace ProcessImage
                         { "color-green", metadata.Color.Green },
                         { "color-blue", metadata.Color.Blue },
                         { "category", metadata.Category.ToString() },
+                        { "size", "big"}
                     }
             };
         }

@@ -12,12 +12,20 @@ namespace ProcessImage.Services
         public FileMetadata AnalyzeImage(string name, long size)
         {
             Random random = new Random();
-            var color = new Color
+            var color = new Color();
+            if (name == "white")
             {
-                Red = random.Next(0, 255),
-                Green = random.Next(0, 255),
-                Blue = random.Next(0, 255),
-            };
+                color.Red = 0;
+                color.Green = 0;
+                color.Blue = 0;
+            }
+            else
+            {
+                color.Red = random.Next(0, 255);
+                color.Green = random.Next(0, 255);
+                color.Blue = random.Next(0, 255);
+
+            }
             var result = new FileMetadata
             {
                 Name = name,

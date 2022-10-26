@@ -13,7 +13,7 @@ namespace SubscriptionReceiver
         static string topicName = "processedimage";
 
         // name of the subscription to the topic
-        static string subscriptionName = "white-image";
+        static string subscriptionName = "AllImage";
 
         // the client that owns the connection and can be used to create senders and receivers
         static ServiceBusClient client;

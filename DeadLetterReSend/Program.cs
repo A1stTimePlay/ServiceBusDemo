@@ -48,7 +48,7 @@ namespace DeadLetterReSend
             {
                 // first, we create a new sendable message of the picked up message
                 // that we can resubmit.
-                Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+                Regex rgx = new Regex("[^a-zA-Z]");
                 var jsonString = Encoding.UTF8.GetString(args.Message.Body);
                 PersonModel person = JsonSerializer.Deserialize<PersonModel>(jsonString);
                 Console.WriteLine($"Faulty message received: First name: {person.FirstName} - Last name: {person.LastName}");
@@ -60,7 +60,7 @@ namespace DeadLetterReSend
                 {
                     person.LastName = rgx.Replace(person.LastName, "");
                 }
-                Console.WriteLine($"Fixed message received: First name: {person.FirstName} - Last name: {person.LastName}");
+                Console.WriteLine($"Fixed message to re-send: First name: {person.FirstName} - Last name: {person.LastName}");
                 var fixedMessage = JsonSerializer.Serialize(person);
 
                 var resubmitMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(fixedMessage));
